@@ -6,7 +6,7 @@
 // A light weight genetics library based on basic Mendelian principles.
 // © Matthew Main 2019
 
-
+console.log("test");
 
 var DNA = {
 
