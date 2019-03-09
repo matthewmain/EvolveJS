@@ -1,12 +1,22 @@
 
+
 ///////////////////////////////////////////////////////////////////////
 ///////////////////////////////  DNA.js  //////////////////////////////
 ///////////////////////////////////////////////////////////////////////
 
-// A light weight genetics library based on basic Mendelian principles.
+// A lightweight genetics library based on principles of Mendelian genetics.
 // © Matthew Main 2019
 
 
+
+
+///// Settings /////
+
+var mutationRate = 5;  // (as average meiosis events per mutation; higher is less frequent)
+
+
+
+///// Library Object /////
 
 var DNA = {
 
