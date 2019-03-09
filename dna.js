@@ -75,10 +75,10 @@ var DNA = {
   },
 
   //adds a new gene (with identical alleles of neutral dominance) and stores it in the Genome object
-  addGene: function( species, geneName, initialValue, expressionType, mutationRange, mutationMin, mutationMax ) {
+  addGene: function( species, geneName, initialValue, expressionType, mutationRange, valueMin, valueMax ) {
     var gene = new DNA.Gene( new DNA.Allele( initialValue, 0.5 ),  // allele1
                              new DNA.Allele( initialValue, 0.5 ),  // allele2
-                             { range: mutationRange, min: mutationMin, max: mutationMax },  // mutationParameter
+                             { range: mutationRange, min: valueMin, max: valueMax },  // mutationParameter
                              expressionType );  // expressionType
     DNA.Species[species][geneName] = gene;
     return gene;
@@ -96,9 +96,9 @@ var DNA = {
 
   //mutates an allele (changes its value according to its expression type and within its mutation range)
   mutate: function( species, geneName, alleleValue ) {
-    var ra = species[geneName].mutationParameter.range;  // range
-    var mn = species[geneName].mutationParameter.min;  // min
-    var mx = species[geneName].mutationParameter.max;  // max
+    var ra = species[geneName].mutationParameter.range;  // range of a single mutation
+    var mn = species[geneName].mutationParameter.min;  // min value (mutation cannot go below)
+    var mx = species[geneName].mutationParameter.max;  // max value (mutation cannot go above)
     var et = species[geneName].expressionType;  // expression type
     var mutatedAlleleVal;
     if (et === "complete") {
