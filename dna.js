@@ -135,17 +135,6 @@ var DNA = {
     return childGenotype;
   },
 
-  //generates a random genotype from a species' genome
-  randomGenotype: function( species ) {
-    var newGenotype = {};
-    for ( var gene in species ) {
-      newGenotype[gene] = createGene( species[gene].initialValue(), 
-                                      species[gene].mutationParameter, 
-                                      species[gene].expressionType );
-    }
-    return newGenotype;
-  }
-
 
 };
 
