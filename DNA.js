@@ -70,13 +70,18 @@ var DNA = {
 
   //// Methods ////
 
+  //adds a new species genome to the collection of species objects
+  CreateGenome: function( speciesName ) {
+    new DNA.Genome( speciesName );
+  },
+
   //creates a new gene (with random, identical alleles) and stores it in the Genome object
   CreateGene: function( speciesName, geneName, initialValue, expressionType, mutationRange, mutationMin, mutationMax ) {
     var dominanceIndex = Math.random();  // randum decimal between 0 and 1
-    var gene = new Gene( new Allele( initialValue, dominanceIndex ),  // allele1
-                         new Allele( initialValue, dominanceIndex ),  // allele2
-                         { range: mutationRange, min: mutationMin, max: mutationMax },  // mutationParameter
-                         expressionType );  // expressionType
+    var gene = new DNA.Gene( new DNA.Allele( initialValue, dominanceIndex ),  // allele1
+                             new DNA.Allele( initialValue, dominanceIndex ),  // allele2
+                             { range: mutationRange, min: mutationMin, max: mutationMax },  // mutationParameter
+                             expressionType );  // expressionType
     DNA.Species[speciesName][geneName] = gene;
     return gene;
   },
@@ -104,8 +109,8 @@ var DNA = {
     for ( var geneName in Genome ) {  // randomly selects one allele per gene from each parent genotype
       var parent1Allele = rib(1,2) === 1 ? parentGenotype1[geneName].allele1 : parentGenotype1[geneName].allele2;
       var parent2Allele = rib(1,2) === 1 ? parentGenotype2[geneName].allele1 : parentGenotype2[geneName].allele2;
-      var newAllele1 = new Allele( parent1Allele.value, parent1Allele.dominanceIndex );
-      var newAllele2 = new Allele( parent2Allele.value, parent2Allele.dominanceIndex );
+      var newAllele1 = new DNA.Allele( parent1Allele.value, parent1Allele.dominanceIndex );
+      var newAllele2 = new DNA.Allele( parent2Allele.value, parent2Allele.dominanceIndex );
       if ( rib( 1, mutationRate ) === 1 ) {  // handle mutations
         if ( rib(1,2) === 1 ) {
           newAllele1.value = mutate( geneName, newAllele1.value );
@@ -115,9 +120,9 @@ var DNA = {
       }
       var newMutationParameter = parentGenotype1[geneName].mutationParameter;
       var newExpressionType = parentGenotype1[geneName].expressionType;
-      geneCollection[geneName] = new Gene( newAllele1, newAllele2, newMutationParameter, newExpressionType );
+      geneCollection[geneName] = new DNA.Gene( newAllele1, newAllele2, newMutationParameter, newExpressionType );
     }
-    var childGenotype = new Genotype( geneCollection );
+    var childGenotype = new DNA.Genotype( geneCollection );
     return childGenotype;
   },
 
