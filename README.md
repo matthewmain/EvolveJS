@@ -1,6 +1,6 @@
 # DNA.js
 
-A lightweight genetics library based on principles of Mendelian genetics.
+A lightweight genetics library modeled on principles of Mendelian genetics.
 
 © Matthew Main 2019 
 

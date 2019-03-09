@@ -1,8 +1,8 @@
 
 
-///////////////////////////////////////////////////////////////////////
-///////////////////////////////  DNA.JS  //////////////////////////////
-///////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////
+/////////////////////  DNA.JS  ////////////////////////
+///////////////////////////////////////////////////////
 
 // A lightweight genetics library based on principles of Mendelian genetics.
 // © Matthew Main 2019
@@ -10,19 +10,18 @@
 
 
 
-///// Settings /////
-
-var mutationRate = 5;  // (as average meiosis events per mutation; higher is less frequent)
-
-
-
-///// Library Object /////
+/////-- Library Object --/////
  
 var DNA = {
 
 
   //species collection (a collection of genome objects by species name)
   Species: {},
+
+
+  //// Settings ////
+
+  mutationRate: 3, // (as average meiosis events per mutation; higher is less frequent)
 
 
   //// Object Constructors ////
@@ -47,14 +46,14 @@ var DNA = {
   },
 
   //genotype (all of an organism's allele pairs; i.e., a blueprint for a specific body*) 
-  Genotype: function( genome ) {  // genome as object collection of genes as { traitName: <geneObject>, ... }
-    for ( var gene in genome ) {
-      this[gene] = genome[gene];
+  Genotype: function( species ) {  // species genome as object collection of genes: { traitName: <geneObject>, ... }
+    for ( var gene in species ) {
+      this[gene] = species[gene];
     } 
   },
 
   //phenotype (the organism, as a collection of gene expressions)
-  Phenotype: function( genotype ) {  // genotype as object collection of genes as { traitName: <value>, ... }
+  Phenotype: function( genotype ) {  // genotype as object collection of genes: { traitName: <value>, ... }
     for ( var gene in genotype ) {
       if ( genotype[gene].expressionType === "complete" ) {  // expresses dominant allele value only (1,2 -> 2)
         var dominanceDifference = genotype[gene].allele1.dominanceIndex - genotype[gene].allele2.dominanceIndex;
@@ -71,27 +70,36 @@ var DNA = {
   //// Methods ////
 
   //adds a new species genome to the collection of species objects
-  CreateGenome: function( speciesName ) {
-    new DNA.Genome( speciesName );
+  addGenome: function( speciesName ) {
+    return new DNA.Genome( speciesName );
   },
 
-  //creates a new gene (with random, identical alleles) and stores it in the Genome object
-  CreateGene: function( speciesName, geneName, initialValue, expressionType, mutationRange, mutationMin, mutationMax ) {
-    var dominanceIndex = Math.random();  // randum decimal between 0 and 1
-    var gene = new DNA.Gene( new DNA.Allele( initialValue, dominanceIndex ),  // allele1
-                             new DNA.Allele( initialValue, dominanceIndex ),  // allele2
+  //adds a new gene (with identical alleles of neutral dominance) and stores it in the Genome object
+  addGene: function( species, geneName, initialValue, expressionType, mutationRange, mutationMin, mutationMax ) {
+    var gene = new DNA.Gene( new DNA.Allele( initialValue, 0.5 ),  // allele1
+                             new DNA.Allele( initialValue, 0.5 ),  // allele2
                              { range: mutationRange, min: mutationMin, max: mutationMax },  // mutationParameter
                              expressionType );  // expressionType
-    DNA.Species[speciesName][geneName] = gene;
+    DNA.Species[species][geneName] = gene;
     return gene;
   },
 
+  //creates a new first-generation genotype from a species genome
+  newGenotype: function( species ) {
+    return new this.Genotype( species );
+  },
+
+  //generates a phenotype from a genotype
+  generatePhenotype: function( genotype) {
+    return new this.Phenotype( genotype );
+  },
+
   //mutates an allele (changes its value according to its expression type and within its mutation range)
-  Mutate: function( geneName, alleleValue ) {
-    var ra = Genome[geneName].mutationParameter.range;  // range
-    var mn = Genome[geneName].mutationParameter.min;  // min
-    var mx = Genome[geneName].mutationParameter.max;  // max
-    var et = Genome[geneName].expressionType;  // expression type
+  mutate: function( species, geneName, alleleValue ) {
+    var ra = species[geneName].mutationParameter.range;  // range
+    var mn = species[geneName].mutationParameter.min;  // min
+    var mx = species[geneName].mutationParameter.max;  // max
+    var et = species[geneName].expressionType;  // expression type
     var mutatedAlleleVal;
     if (et === "complete") {
       mutatedAlleleVal = rib( alleleValue-ra/2, alleleValue+ra/2 );  // random integer value within mutation range
@@ -103,36 +111,37 @@ var DNA = {
     return alleleValue;
   },
 
-  //performs meiosis (creates new child genotype from parent genotypes)
-  Meiosis: function( parentGenotype1, parentGenotype2 ) {
-    var geneCollection = {};
-    for ( var geneName in Genome ) {  // randomly selects one allele per gene from each parent genotype
-      var parent1Allele = rib(1,2) === 1 ? parentGenotype1[geneName].allele1 : parentGenotype1[geneName].allele2;
-      var parent2Allele = rib(1,2) === 1 ? parentGenotype2[geneName].allele1 : parentGenotype2[geneName].allele2;
+  //performs meiosis (returns a new child genotype from parent genotypes)
+  meiosis: function( species, parentGenotype1, parentGenotype2 ) {
+    if ( parentGenotype2 === undefined ) parentGenotype2 = parentGenotype1;  // handles asexual reproduction
+    var genes = {};
+    for ( var gene in species ) {  // randomly selects one allele per gene from each parent genotype
+      var parent1Allele = rib(1,2) === 1 ? parentGenotype1[gene].allele1 : parentGenotype1[gene].allele2;
+      var parent2Allele = rib(1,2) === 1 ? parentGenotype2[gene].allele1 : parentGenotype2[gene].allele2;
       var newAllele1 = new DNA.Allele( parent1Allele.value, parent1Allele.dominanceIndex );
       var newAllele2 = new DNA.Allele( parent2Allele.value, parent2Allele.dominanceIndex );
-      if ( rib( 1, mutationRate ) === 1 ) {  // handle mutations
+      if ( rib( 1, this.mutationRate ) === 1 ) {  // handle mutations
         if ( rib(1,2) === 1 ) {
-          newAllele1.value = mutate( geneName, newAllele1.value );
+          newAllele1.value = this.mutate( species, gene, newAllele1.value );
         } else {
-          newAllele2.value = mutate( geneName, newAllele2.value );
+          newAllele2.value = this.mutate( species, gene, newAllele2.value );
         }
       }
-      var newMutationParameter = parentGenotype1[geneName].mutationParameter;
-      var newExpressionType = parentGenotype1[geneName].expressionType;
-      geneCollection[geneName] = new DNA.Gene( newAllele1, newAllele2, newMutationParameter, newExpressionType );
+      var newMutationParameter = parentGenotype1[gene].mutationParameter;
+      var newExpressionType = parentGenotype1[gene].expressionType;
+      genes[gene] = new DNA.Gene( newAllele1, newAllele2, newMutationParameter, newExpressionType );
     }
-    var childGenotype = new DNA.Genotype( geneCollection );
+    var childGenotype = new DNA.Genotype( genes );
     return childGenotype;
   },
 
   //generates a random genotype from a species' genome
-  RandomGenotype: function( species ) {
+  randomGenotype: function( species ) {
     var newGenotype = {};
-    for ( var geneName in species ) {
-      newGenotype[geneName] = createGene( species[geneName].initialValue(), 
-                                          species[geneName].mutationParameter, 
-                                          species[geneName].expressionType );
+    for ( var gene in species ) {
+      newGenotype[gene] = createGene( species[gene].initialValue(), 
+                                      species[gene].mutationParameter, 
+                                      species[gene].expressionType );
     }
     return newGenotype;
   }
@@ -142,7 +151,7 @@ var DNA = {
 
 
 
-///// Helper Functions /////
+/////-- Helper Functions --/////
 
 //random integer between two numbers (min/max inclusive)
 function rib( min, max ) {
@@ -156,7 +165,7 @@ function rfb( min, max ) {
 
 
 
-///// Notes /////
+/////-- Notes --/////
 
 //*in this model, an entire genotype is contained on a single autosome
 
