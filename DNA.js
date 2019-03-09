@@ -6,8 +6,6 @@
 // A light weight genetics library based on basic Mendelian principles.
 // © Matthew Main 2019
 
-console.log("test");
-
 var DNA = {
 
 
@@ -60,7 +58,7 @@ var DNA = {
 
   //// Methods ////
 
-  //creates a new gene (with random, identical alelles) and stores it in the Genome object
+  //creates a new gene (with random, identical alleles) and stores it in the Genome object
   CreateGene: function( speciesName, geneName, initialValue, expressionType, mutationRange, mutationMin, mutationMax ) {
     var dominanceIndex = Math.random();  // randum decimal between 0 and 1
     var gene = new Gene( new Allele( initialValue, dominanceIndex ),  // allele1
@@ -72,20 +70,20 @@ var DNA = {
   },
 
   //mutates an allele (changes its value according to its expression type and within its mutation range)
-  Mutate: function( geneName, alelleValue ) {
+  Mutate: function( geneName, alleleValue ) {
     var ra = Genome[geneName].mutationParameter.range;  // range
     var mn = Genome[geneName].mutationParameter.min;  // min
     var mx = Genome[geneName].mutationParameter.max;  // max
     var et = Genome[geneName].expressionType;  // expression type
-    var mutatedAlelleVal;
+    var mutatedAlleleVal;
     if (et === "complete") {
-      mutatedAlelleVal = rib( alelleValue-ra/2, alelleValue+ra/2 );  // random integer value within mutation range
-      if ( mutatedAlelleVal >= mn && ( mx === null || mutatedAlelleVal <= mx ) ) { alelleValue = mutatedAlelleVal; }
+      mutatedAlleleVal = rib( alleleValue-ra/2, alleleValue+ra/2 );  // random integer value within mutation range
+      if ( mutatedAlleleVal >= mn && ( mx === null || mutatedAlleleVal <= mx ) ) { alleleValue = mutatedAlleleVal; }
     } else if ( et === "partial" || et === "co") {
-      mutatedAlelleVal = rfb( alelleValue-ra/2, alelleValue+ra/2);  // random decimal value within mutation range
-      if ( mutatedAlelleVal >= mn && ( mx === null || mutatedAlelleVal <= mx ) ) { alelleValue = mutatedAlelleVal; }
+      mutatedAlleleVal = rfb( alleleValue-ra/2, alleleValue+ra/2);  // random decimal value within mutation range
+      if ( mutatedAlleleVal >= mn && ( mx === null || mutatedAlleleVal <= mx ) ) { alleleValue = mutatedAlleleVal; }
     }
-    return alelleValue;
+    return alleleValue;
   },
 
   //performs meiosis (creates new child genotype from parent genotypes)
