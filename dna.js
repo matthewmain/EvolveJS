@@ -52,7 +52,7 @@ var DNA = {
     } 
   },
 
-  //phenotype (the organism, as a collection of gene expressions)
+  //phenotype (all of an organism's expressed traits; i.e., a body)
   Phenotype: function( genotype ) {  // genotype as object collection of genes: { traitName: <value>, ... }
     for ( var gene in genotype ) {
       if ( genotype[gene].expressionType === "complete" ) {  // expresses dominant allele value only (1,2 -> 2)
