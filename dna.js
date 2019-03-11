@@ -4,7 +4,7 @@
 /////////////////////  DNA.JS  ////////////////////////
 ///////////////////////////////////////////////////////
 
-// A lightweight genetics library based on principles of Mendelian genetics.
+// A lightweight genetics library based on principles of Mendelian inheritance.
 // © Matthew Main 2019
 
 
