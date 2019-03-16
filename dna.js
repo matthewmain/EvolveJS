@@ -4,7 +4,7 @@
 /////////////////////  DNA.JS  ////////////////////////
 ///////////////////////////////////////////////////////
 
-// A lightweight genetics library based on principles of Mendelian inheritance.
+// A lightweight genetics library based on principles of Mendelian inheritance and Darwinian selection.
 // © Matthew Main 2019
 
 
@@ -15,8 +15,10 @@
 var DNA = {
 
 
+  //// Trackers ////
+  
   //species collection (a collection of genome objects by species name)
-  Species: {},
+  species: {},
 
 
   //// Settings ////
@@ -33,36 +35,46 @@ var DNA = {
   },
 
   //gene locus (a feature; e.g. eye color)
-  Gene: function( allele1, allele2, mutationParameter, expressionType ) {
+  Gene: function( allele1, allele2, dominanceType, expressionType, mutationParameter ) {
     this.allele1 = allele1;
     this.allele2 = allele2;
+    this.dominanceType = dominanceType;  // (can be "complete", "co", "partial")
+    this.expressionType = expressionType;  // (can be "count" for integer values, or "scale" for decimal values)
     this.mutationParameter = mutationParameter;  // (as object: { range: <range>, min: <min>, max: <max> } )
-    this.expressionType = expressionType;  // (can be "complete", "co", or "partial")
   },
 
   //genome (all of a species' genes; i.e., a blueprint for a generic body)
-  Genome: function( speciesName ) {
-    DNA.Species[speciesName] = {};
+  Genome: function( reproductionType ) {  // (reproductionType can be "asexual", "autogamous", or "sexual")
+    this.genes = {};
+    this.reproductionType = reproductionType;
   },
 
   //genotype (all of an organism's allele pairs; i.e., a blueprint for a specific body*) 
-  Genotype: function( species ) {  // species genome as object collection of genes: { traitName: <geneObject>, ... }
-    for ( var gene in species ) {
-      this[gene] = species[gene];
+  Genotype: function( species ) {  // (species as DNA.species.<speciesName>)
+    this.genes = {};
+    for ( var gene in species.genes ) { 
+      this.genes[gene] = species.genes[gene]; 
     } 
+    this.reproductionType = species.reproductionType;
   },
 
   //phenotype (all of an organism's expressed traits; i.e., a body)
   Phenotype: function( genotype ) {  // genotype as object collection of genes: { traitName: <value>, ... }
-    for ( var gene in genotype ) {
-      if ( genotype[gene].expressionType === "complete" ) {  // expresses dominant allele value only (1,2 -> 2)
-        var dominanceDifference = genotype[gene].allele1.dominanceIndex - genotype[gene].allele2.dominanceIndex;
-        this[gene+"Value"] = dominanceDifference >= 0 ? genotype[gene].allele1.value : genotype[gene].allele2.value;
-      } else if ( genotype[gene].expressionType === "partial" ) {  // expresses average of allele values (1,2 -> 1.5)
-        this[gene+"Value"] = ( genotype[gene].allele1.value + genotype[gene].allele2.value ) / 2;
-      } else if ( genotype[gene].expressionType === "co" ) {  // expresses combination of allele values (1,2 -> 1&2)
-        //(handle case by case)
+    var genes = genotype.genes;
+    for ( var gene in genes ) {
+      if ( genes[gene].dominanceType === "complete" ) {  // expresses dominant allele value only (1,2 -> 2)
+        var dominanceDifference = genes[gene].allele1.dominanceIndex - genes[gene].allele2.dominanceIndex;
+        this[gene+"Value"] = dominanceDifference >= 0 ? genes[gene].allele1.value : genes[gene].allele2.value;
+      } else if ( genes[gene].dominanceType === "partial" ) {  // expresses average of allele values (1,2 -> 1.5)
+        this[gene+"Value"] = ( genes[gene].allele1.value + genes[gene].allele2.value ) / 2;
+      } else if ( genes[gene].dominanceType === "co" ) {  // expresses combination of allele values (1,2 -> [1,2])
+        this[gene+"Values"] = [ genes[gene].allele1.value, genes[gene].allele2.value ];
       }
+    }
+    switch ( genotype.reproductionType ) {
+      case "asexual": this.sex = "none"; break;
+      case "autogamous": this.sex = "hermaphrodite"; break;
+      case "sexual": this.sex = rib(1,2) === 1 ? "female" : "male";
     }
   },
 
@@ -70,74 +82,75 @@ var DNA = {
   //// Methods ////
 
   //adds a new species genome to the collection of species objects
-  addGenome: function( speciesName ) {
-    return new DNA.Genome( speciesName );
+  addGenome: function( speciesName, reproductionType ) {
+    var newGenome = new DNA.Genome( reproductionType );
+    DNA.species[speciesName] = newGenome;
+    return DNA.species[speciesName];
   },
 
-  //adds a new gene (with identical prototype alleles of neutral dominance) and stores it in the Genome object
-  addGene: function( species, geneName, initialValue, expressionType, mutationRange, valueMin, valueMax ) {
-    var gene = new DNA.Gene( new DNA.Allele( initialValue, 0.5 ),  // allele1 prototype
-                             new DNA.Allele( initialValue, 0.5 ),  // allele2 prototype
-                             { range: mutationRange, min: valueMin, max: valueMax },  // mutationParameter
-                             expressionType );  // expressionType
-    DNA.Species[species][geneName] = gene;
+  //adds a new gene (with identical prototype alleles of neutral dominance) to a species genome
+  addGene: function( species, geneName, domType, expType, initVal, mutRange, valMin, valMax ) {
+    var gene = new DNA.Gene( 
+      new DNA.Allele( initVal, 0.5 ),  // allele1 prototype
+      new DNA.Allele( initVal, 0.5 ),  // allele2 prototype
+      domType,  // dominance type
+      expType,  // expression type
+      { range: mutRange, min: valMin, max: valMax }  // mutationParameter
+    );
+    species.genes[geneName] = gene;
     return gene;
   },
 
   //creates a new first-generation genotype from a species genome
-  newGenotype: function( species ) {
+  newFirstGenGenotype: function( species ) {  // (species as DNA.species.<speciesName>)
     return new this.Genotype( species );
   },
 
   //generates a phenotype from a genotype
-  generatePhenotype: function( genotype) {
-    return new this.Phenotype( genotype );
+  generatePhenotype: function( genotype ) {
+    return new DNA.Phenotype( genotype );
   },
 
   //mutates an allele (changes its value according to its expression type and within its mutation range)
-  mutate: function( species, geneName, allele ) {
-    var ra = species[geneName].mutationParameter.range;  // range of a single mutation
-    var mn = species[geneName].mutationParameter.min;  // min value (mutation cannot go below)
-    var mx = species[geneName].mutationParameter.max;  // max value (mutation cannot go above)
-    var et = species[geneName].expressionType;  // expression type
+  mutate: function( species, gene, allele ) {
+    var ra = gene.mutationParameter.range;  // range of a single mutation
+    var mn = gene.mutationParameter.min;  // min value (mutation cannot go below)
+    var mx = gene.mutationParameter.max;  // max value (mutation cannot go above)
     var originalAlleleVal = allele.value;
-    var mutatedAlleleVal;
-    if (et === "complete") {
-      mutatedAlleleVal = rib( allele.value-ra/2, allele.value+ra/2 );  // random integer value within mutation range
-      if ( mutatedAlleleVal >= mn && ( mx === null || mutatedAlleleVal <= mx ) ) { 
-        allele.value = mutatedAlleleVal; 
-      }
-    } else if ( et === "partial" || et === "co") {
-      mutatedAlleleVal = rfb( allele.value-ra/2, allele.value+ra/2);  // random decimal value within mutation range
-      if ( mutatedAlleleVal >= mn && ( mx === null || mutatedAlleleVal <= mx ) ) { 
-        allele.value = mutatedAlleleVal; 
-      }
+    var mutatedAlleleVal = rfb( allele.value-ra/2, allele.value+ra/2 );  // random decimal value within mutation range
+    if ( gene.expressionType === "count" ) {
+      mutatedAlleleVal = Math.round( mutatedAlleleVal );  // rounds value to whole number if "count" expression type
     }
-    if ( allele.value != originalAlleleVal ) { allele.dominanceIndex = Math.random(); }
+    if ( ( mn === null || mutatedAlleleVal >= mn) && ( mx === null || mutatedAlleleVal <= mx ) ) { 
+      allele.value = mutatedAlleleVal;  // mutates allele value if within min and max value parameters
+    }
+    if ( allele.value != originalAlleleVal ) { 
+      allele.dominanceIndex = Math.random();  // assigns new random dominance index if allele has mutated
+    }
     return allele;
   },
 
-  //performs meiosis (returns a new child genotype from parent genotypes)
-  meiosis: function( species, parentGenotype1, parentGenotype2 ) {
-    if ( parentGenotype2 === undefined ) parentGenotype2 = parentGenotype1;  // handles asexual reproduction
-    var genes = {};
-    for ( var gene in species ) {  // randomly selects one allele per gene from each parent genotype
-      var parent1Allele = rib(1,2) === 1 ? parentGenotype1[gene].allele1 : parentGenotype1[gene].allele2;
-      var parent2Allele = rib(1,2) === 1 ? parentGenotype2[gene].allele1 : parentGenotype2[gene].allele2;
+  //performs meiosis (returns a new child genotype from a parent genotype or genotypes)
+  meiosis: function( species, parentGenotype1, parentGenotype2 ) {  // (species as DNA.species.<speciesName>)
+    if ( parentGenotype2 === undefined ) parentGenotype2 = parentGenotype1;
+    var childGenotype = { genes: {}, reproductionType: species.reproductionType };
+    for ( var gene in species.genes ) {  // randomly selects one allele per gene from each parent genotype
+      var parent1Allele = rib(1,2) === 1 ? parentGenotype1.genes[gene].allele1 : parentGenotype1.genes[gene].allele2;
+      var parent2Allele = rib(1,2) === 1 ? parentGenotype2.genes[gene].allele1 : parentGenotype2.genes[gene].allele2;
       var newAllele1 = new DNA.Allele( parent1Allele.value, parent1Allele.dominanceIndex );
       var newAllele2 = new DNA.Allele( parent2Allele.value, parent2Allele.dominanceIndex );
-      if ( rib( 1, this.mutationRate ) === 1 ) {  // handle mutations
+      if ( rib( 1, DNA.mutationRate ) === 1 ) {  // handle mutations
         if ( rib(1,2) === 1 ) {
-          newAllele1 = this.mutate( species, gene, newAllele1 );
+          newAllele1 = DNA.mutate( species, species.genes[gene], newAllele1 );
         } else {
-          newAllele2 = this.mutate( species, gene, newAllele2 );
+          newAllele2 = DNA.mutate( species, species.genes[gene], newAllele2 );
         }
       }
-      var newMutationParameter = parentGenotype1[gene].mutationParameter;
-      var newExpressionType = parentGenotype1[gene].expressionType;
-      genes[gene] = new DNA.Gene( newAllele1, newAllele2, newMutationParameter, newExpressionType );
+      var dt = species.genes[gene].dominanceType;
+      var et = species.genes[gene].expressionType;
+      var mp = species.genes[gene].mutationParameter;
+      childGenotype.genes[gene] = new DNA.Gene( newAllele1, newAllele2, dt, et, mp );
     }
-    var childGenotype = new DNA.Genotype( genes );
     return childGenotype;
   },
 
