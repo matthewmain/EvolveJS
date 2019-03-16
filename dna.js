@@ -101,9 +101,21 @@ var DNA = {
     return gene;
   },
 
-  //creates a new first-generation genotype from a species genome
-  newFirstGenGenotype: function( species ) {  // (species as DNA.species.<speciesName>)
-    return new this.Genotype( species );
+  //creates a new standard genotype from a species genome (for genetically identical organisms)
+  newStandardFirstGenGenotype: function( species ) {  // (species as DNA.species.<speciesName>)
+    return new DNA.Genotype( species );
+  },
+
+  //creates a new random genotype from a species genome (for genetically distinct organisms)
+  newRandomizedFirstGenGenotype: function( species ) {  // (species as DNA.species.<speciesName>)
+    var randomizedGenotype = new DNA.Genotype( species );
+    for ( var gene in species.genes ) { 
+      var newAllele1 = randomizedGenotype.genes[gene].allele1;
+      var newAllele2 = randomizedGenotype.genes[gene].allele2;
+      newAllele1 = DNA.mutate( species, species.genes[gene], newAllele1 );
+      newAllele2 = DNA.mutate( species, species.genes[gene], newAllele2 );
+    }
+    return randomizedGenotype;
   },
 
   //generates a phenotype from a genotype
