@@ -1,7 +1,7 @@
 
 
 ///////////////////////////////////////////////////////
-/////////////////////  DNA.JS  ////////////////////////
+///////////////////  EVOLVE.JS  ///////////////////////
 ///////////////////////////////////////////////////////
 
 // A lightweight genetics library based on principles of Mendelian inheritance and Darwinian selection.
@@ -21,11 +21,6 @@ var DNA = {
   species: {},
 
 
-  //// Settings ////
-
-  mutationRate: 5, // (as average meiosis events per mutation; higher is less frequent)
-
-
   //// Object Constructors ////
 
   //allele (a trait; e.g., brown eyes)
@@ -40,7 +35,7 @@ var DNA = {
     this.allele2 = allele2;
     this.dominanceType = dominanceType;  // (can be "complete", "co", "partial")
     this.expressionType = expressionType;  // (can be "count" for integer values, or "scale" for decimal values)
-    this.mutationParameter = mutationParameter;  // (as object: { range: <range>, min: <min>, max: <max> } )
+    this.mutationParameter = mutationParameter;  // (as object: { frequency: <*>, range: <>, min: <>, max: <> } )
   },
 
   //genome (all of a species' genes; i.e., a blueprint for a generic body)
@@ -49,11 +44,11 @@ var DNA = {
     this.reproductionType = reproductionType;
   },
 
-  //genotype (all of an organism's allele pairs; i.e., a blueprint for a specific body*) 
+  //genotype (all of an organism's allele pairs; i.e., a blueprint for a specific body**) 
   Genotype: function( species ) {  // (species as DNA.species.<speciesName>)
     this.genes = {};
-    for ( var gene in species.genes ) { 
-      this.genes[gene] = species.genes[gene]; 
+    for ( var gene in species.genes ) {
+      this.genes[gene] = JSON.parse(JSON.stringify( species.genes[gene] ));  // deep clone (as value not reference)
     } 
     this.reproductionType = species.reproductionType;
   },
@@ -89,13 +84,13 @@ var DNA = {
   },
 
   //adds a new gene (with identical prototype alleles of neutral dominance) to a species genome
-  addGene: function( species, geneName, domType, expType, initVal, mutRange, valMin, valMax ) {
+  addGene: function( species, geneName, domType, expType, initVal, mutFreq, mutRange, valMin, valMax ) {
     var gene = new DNA.Gene( 
       new DNA.Allele( initVal, 0.5 ),  // allele1 prototype
       new DNA.Allele( initVal, 0.5 ),  // allele2 prototype
       domType,  // dominance type
       expType,  // expression type
-      { range: mutRange, min: valMin, max: valMax }  // mutationParameter
+      { frequency: mutFreq, range: mutRange, min: valMin, max: valMax }  // mutationParameter
     );
     species.genes[geneName] = gene;
     return gene;
@@ -151,7 +146,7 @@ var DNA = {
       var parent2Allele = rib(1,2) === 1 ? parentGenotype2.genes[gene].allele1 : parentGenotype2.genes[gene].allele2;
       var newAllele1 = new DNA.Allele( parent1Allele.value, parent1Allele.dominanceIndex );
       var newAllele2 = new DNA.Allele( parent2Allele.value, parent2Allele.dominanceIndex );
-      if ( rib( 1, DNA.mutationRate ) === 1 ) {  // handle mutations
+      if ( rib( 1, species.genes[gene].mutationParameter ) === 1 ) {  // handle mutations
         if ( rib(1,2) === 1 ) {
           newAllele1 = DNA.mutate( species, species.genes[gene], newAllele1 );
         } else {
@@ -187,7 +182,8 @@ function rfb( min, max ) {
 
 /////-- Notes --/////
 
-//*in this model, an entire genotype is contained on a single autosome
+//*frequency as average meiosis events per mutation; higher is less frequent
+//**in this model, an entire genotype is contained on a single autosome
 
 
 
