@@ -27,9 +27,8 @@ canvas.width = window.innerWidth*cef;
 canvas.height = window.innerHeight*cef;
 
 ///spoid (organism) settings
-var initialPopulationCount = 3;
-var imw = canvas.width*0.04;  // initial mature width
-//var maxSpoids = 100;
+var initialPopulationCount = 10;
+var imw = canvas.width*0.05;  // initial mature width
 
 ///colors
 var C = {
@@ -49,10 +48,11 @@ var worldTime = 0;
 
 ///DNA.js
 var spoidGenome = DNA.addGenome( "spoid", "sexual" );
-DNA.addGene( spoidGenome, "matureWidth", "partial", "scale", imw, imw, imw*0.5, null );
-DNA.addGene( spoidGenome, "stripeColor", "co", "count", 1, 5, 0, 2 );
-DNA.addGene( spoidGenome, "litterSize", "complete", "count", 3, 3, 1, null );
+DNA.addGene( spoidGenome, "matureWidth", "partial", "scale", imw, 5, imw, imw*0.5, null );
+DNA.addGene( spoidGenome, "stripeColor", "co", "count", 1, 5, 5, 0, 2 );
+DNA.addGene( spoidGenome, "litterSize", "complete", "count", 3, 10, 3, 1, null );
 DNA.mutationRate = 5;
+
 
 
 
@@ -136,9 +136,9 @@ Spoid.prototype.collisionCheck = function() {
       if ( this.isMature && that.isMature && this.sex === "male" && that.sex === "male") {
         if ( this.radius > that.radius ) that.die();
       }
-      // female attack (mature females kill children not their own)
+      // female attack (mature females kill smaller children not their own)
       if ( this.isMature && this.sex === "female" && !that.isMature && that.mother != this ) {
-        that.die();
+        if ( this.radius > that.radius ) that.die();
       }
     }
   });
@@ -154,7 +154,8 @@ Spoid.prototype.reproduce = function( partner ) {
     var childGenotype = DNA.meiosis( spoidGenome, this.genotype, partner.genotype );
     var x = this.x + (partner.x-this.x)/2;
     var y = this.y + (partner.y-this.y)/2;
-    var babySpoid = new Spoid( x, y, this.generation+1, childGenotype );
+    var generation = this.sex === "female" ? this.generation+1 : partner.generation+1;
+    var babySpoid = new Spoid( x, y, generation, childGenotype );
     babySpoid.mother = this.sex === "female" ? this : partner;
     babySpoid.father = this.sex === "female" ? partner : this;
     spoids.push( babySpoid );
@@ -177,7 +178,7 @@ Spoid.prototype.draw = function(){
     //base background stripe
     ctx.beginPath();
     ctx.strokeStyle = this.sex === "female" ? "#ACB5B5" : "#2CB1B1";
-    ctx.lineWidth = this.radius*0.025;
+    ctx.lineWidth = canvas.width*0.001;
     ctx.fillStyle = setStripeColor( sc[ this.stripeColorIndexes[0] ], this.sex );
     ctx.moveTo( -this.radius, -this.radius*0.5 );
     ctx.lineTo( this.radius, -this.radius*0.4 );
@@ -213,7 +214,7 @@ Spoid.prototype.draw = function(){
     ctx.beginPath();
     ctx.strokeStyle = "rgba(0,32,32,0.2)";
     ctx.lineWidth = canvas.width*0.001;
-    ctx.arc( this.x, this.y, this.radius*1.05, 0, 2*Math.PI);
+    ctx.arc( this.x, this.y, this.radius*1.025, 0, 2*Math.PI);
     ctx.stroke();
   }
 };
@@ -233,7 +234,9 @@ Spoid.prototype.age = function() {
 };
 
 Spoid.prototype.die = function() {
+
   if ( this.isAlive ) kill( this );
+
   var timeSinceDeath = worldTime - this.deathTime;
   var flashSpeed = 6;
   var flashCount = 6;
@@ -244,6 +247,7 @@ Spoid.prototype.die = function() {
     spoids = spoids.filter( (spoid)=> spoid.id !== this.id );
   }
 };
+
 
 
 
@@ -313,10 +317,11 @@ canvas.onmousemove = function() {
       //general info
       sex.innerHTML = spoid.sex;
       size.innerHTML = (spoid.radius*2).toFixed(1);
+      age.innerHTML = worldTime - spoid.birthTime + "/" + spoid.lifespan;
       maturity.innerHTML = spoid.isMature ? "adult" : "child";
       generation.innerHTML = spoid.generation;
-      mother.innerHTML = spoid.mother ? "#"+spoid.mother.id : "(first gen)";
-      father.innerHTML = spoid.father ? "#"+spoid.father.id : "(first gen)";
+      mother.innerHTML = spoid.mother ? "#"+spoid.mother.id : "(none; first gen)";
+      father.innerHTML = spoid.father ? "#"+spoid.father.id : "(none; first gen)";
       //mature width gene
       widthType.innerHTML = spoid.genotype.genes.matureWidth.dominanceType;
       widthAlleleOne.innerHTML = spoid.genotype.genes.matureWidth.allele1.value.toFixed(1);
@@ -328,11 +333,21 @@ canvas.onmousemove = function() {
       stripeType.innerHTML = spoid.genotype.genes.stripeColor.dominanceType;
       stripeAlleleOne.innerHTML = colorTerm[spoid.genotype.genes.stripeColor.allele1.value];
       stripeAlleleTwo.innerHTML = colorTerm[spoid.genotype.genes.stripeColor.allele2.value];
-      stripeExpression.innerHTML = sc[colorPhen[0]]+" & "+sc[colorPhen[1]];
+      if ( sc[colorPhen[0]] == sc[colorPhen[1]] ) {
+        stripeExpression.innerHTML = colorTerm[colorPhen[0]];
+      } else {
+        stripeExpression.innerHTML = sc[colorPhen[0]]+" & "+sc[colorPhen[1]];
+      }
       //litter size gene
       litterType.innerHTML = spoid.genotype.genes.litterSize.dominanceType;
-      litterAlleleOne.innerHTML = spoid.genotype.genes.litterSize.allele1.value;
-      litterAlleleTwo.innerHTML = spoid.genotype.genes.litterSize.allele2.value;
+      var litterAllele1 = spoid.genotype.genes.litterSize.allele1;
+      var litterAllele2 = spoid.genotype.genes.litterSize.allele2;
+      var litDom1 = litterAllele1.dominanceIndex.toFixed(2).toString().replace(/^0+/,"");
+      var litDom2 = litterAllele2.dominanceIndex.toFixed(2).toString().replace(/^0+/,"");
+      litterAlleleOne.innerHTML = litterAllele1.value;
+      document.getElementById("di1").innerHTML = "&nbsp;(" + litDom1 + " di)"; 
+      litterAlleleTwo.innerHTML = litterAllele2.value;
+      document.getElementById("di2").innerHTML = "&nbsp;(" + litDom2 + " di)";
       litterExpression.innerHTML = spoid.phenotype.litterSizeValue;
     }
   }
@@ -355,29 +370,23 @@ canvas.onclick = function() {
 
 
 
-/********************* INITIATION &  DISPLAY ************************/
 
 
+/********************* INITIATION & DISPLAY ************************/
 
 
-//initial population (from standard genotypes, then size randomized)
+//initial population (from standard genotypes, then given random ("mutated") sizes & initialized as mature)
 for ( var i=0; i<initialPopulationCount; i++ ) {
   var newSpoidGenotype = DNA.newStandardFirstGenGenotype( spoidGenome );
   var x = rfb(canvas.width*0.2,canvas.width*0.8);
   var y = rfb(canvas.height*0.2,canvas.height*0.8);
-  var newSpoid = new Spoid( x, y, 1, newSpoidGenotype );
-  //randomizes size genes
-  DNA.mutate( DNA.species.spoid, DNA.species.spoid.genes.matureWidth, newSpoid.genotype.genes.matureWidth.allele1 );
-  DNA.mutate( DNA.species.spoid, DNA.species.spoid.genes.matureWidth, newSpoid.genotype.genes.matureWidth.allele2 );
+  DNA.mutate( DNA.species.spoid, DNA.species.spoid.genes.matureWidth, newSpoidGenotype.genes.matureWidth.allele1 );
+  DNA.mutate( DNA.species.spoid, DNA.species.spoid.genes.matureWidth, newSpoidGenotype.genes.matureWidth.allele2 );
   spoids.push( new Spoid( x, y, 1, newSpoidGenotype ) );
-  //start as fully matures
   spoids[i].maturityRatio = 1;
   spoids[i].isMature = true; 
   spoids[i].radius = spoids[i].matureWidth/2;
 }
-
-  console.log(spoids);
-
 
 //displays scene
 function display(){
