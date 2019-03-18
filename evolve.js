@@ -14,8 +14,6 @@
  
 var EV = {
 
-
-  //// Trackers ////
   
   //species collection (a collection of genome objects by species name)
   species: {},
@@ -48,13 +46,13 @@ var EV = {
   Genotype: function( species ) {  // (species as EV.species.<speciesName>)
     this.genes = {};
     for ( var gene in species.genes ) {
-      this.genes[gene] = JSON.parse(JSON.stringify( species.genes[gene] ));  // deep clone (as value not reference)
+      this.genes[gene] = JSON.parse(JSON.stringify( species.genes[gene] ));  // (deep clone: as value not reference)
     } 
     this.reproductionType = species.reproductionType;
   },
 
   //phenotype (all of an organism's expressed traits; i.e., a body)
-  Phenotype: function( genotype ) {  // genotype as object collection of genes: { traitName: <value>, ... }
+  Phenotype: function( genotype ) {  // (genotype as object collection of genes: { traitName: <value>, ... })
     var genes = genotype.genes;
     for ( var gene in genes ) {
       if ( genes[gene].dominanceType === "complete" ) {  // expresses dominant allele value only (1,2 -> 2)
@@ -90,7 +88,7 @@ var EV = {
       new EV.Allele( initVal, 0.5 ),  // allele2 prototype
       domType,  // dominance type
       expType,  // expression type
-      { frequency: mutFreq, range: mutRange, min: valMin, max: valMax }  // mutationParameter
+      { frequency: mutFreq, range: mutRange, min: valMin, max: valMax }  // mutationParameter*
     );
     species.genes[geneName] = gene;
     return gene;
@@ -120,19 +118,19 @@ var EV = {
 
   //mutates an allele (changes its value according to its expression type and within its mutation range)
   mutate: function( species, gene, allele ) {
-    var ra = gene.mutationParameter.range;  // range of a single mutation
+    var ra = gene.mutationParameter.range;  // range (of a single mutation)
     var mn = gene.mutationParameter.min;  // min value (mutation cannot go below)
     var mx = gene.mutationParameter.max;  // max value (mutation cannot go above)
     var originalAlleleVal = allele.value;
-    var mutatedAlleleVal = rfb( allele.value-ra/2, allele.value+ra/2 );  // random decimal value within mutation range
+    var mutatedAlleleVal = rfb( allele.value-ra/2, allele.value+ra/2 );  // random decimal value in mutation range
     if ( gene.expressionType === "count" ) {
-      mutatedAlleleVal = Math.round( mutatedAlleleVal );  // rounds value to whole number if "count" expression type
+      mutatedAlleleVal = Math.round( mutatedAlleleVal );  // (rounds to integer for "count" expression type)
     }
     if ( ( mn === null || mutatedAlleleVal >= mn) && ( mx === null || mutatedAlleleVal <= mx ) ) { 
-      allele.value = mutatedAlleleVal;  // mutates allele value if within min and max value parameters
+      allele.value = mutatedAlleleVal;  // (mutates allele value if within min and max value parameters)
     }
     if ( allele.value != originalAlleleVal ) { 
-      allele.dominanceIndex = Math.random();  // assigns new random dominance index if allele has mutated
+      allele.dominanceIndex = Math.random();  // (assigns new random dominance index if allele has mutated)
     }
     return allele;
   },
@@ -141,12 +139,12 @@ var EV = {
   meiosis: function( species, parentGenotype1, parentGenotype2 ) {  // (species as EV.species.<speciesName>)
     if ( parentGenotype2 === undefined ) parentGenotype2 = parentGenotype1;
     var childGenotype = { genes: {}, reproductionType: species.reproductionType };
-    for ( var gene in species.genes ) {  // randomly selects one allele per gene from each parent genotype
+    for ( var gene in species.genes ) {
       var parent1Allele = rib(1,2) === 1 ? parentGenotype1.genes[gene].allele1 : parentGenotype1.genes[gene].allele2;
       var parent2Allele = rib(1,2) === 1 ? parentGenotype2.genes[gene].allele1 : parentGenotype2.genes[gene].allele2;
       var newAllele1 = new EV.Allele( parent1Allele.value, parent1Allele.dominanceIndex );
       var newAllele2 = new EV.Allele( parent2Allele.value, parent2Allele.dominanceIndex );
-      if ( rib( 1, species.genes[gene].mutationParameter ) === 1 ) {  // handle mutations
+      if ( rib( 1, species.genes[gene].mutationParameter ) === 1 ) {
         if ( rib(1,2) === 1 ) {
           newAllele1 = EV.mutate( species, species.genes[gene], newAllele1 );
         } else {
