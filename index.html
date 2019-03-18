@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <title>Spoids</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="https://use.typekit.net/rla4oix.css">
+</head>
+
+<body>
+
+	<canvas></canvas>
+	<div class="header info" id="info"> 
+		<p id="hover"> hover a spoid for info </p>
+		<br>
+		<div class="info-content-div">
+			<div class="general-info-div">
+				<p> sex: <span class="data" id="sex"></span> </p>
+				<p> current size: <span class="data" id="size"></span> </p>
+				<p> age: <span class="data" id="age"></span> </p>
+				<p> maturity: <span class="data" id="maturity"></span> </p>
+				<p> generation: <span class="data" id="generation"></span> </p>
+				<p> mother's id: <span class="data" id="mother"></span> </p>
+				<p> father's id: <span class="data" id="father"></span> </p>
+			</div>
+			<div class="genes-div">
+				<div class = "genes-heading-div">
+					<p class="genes-heading">GENES</p>
+				</div>
+				<div class="gene-div">
+					<p class="gene-name"><u> mature width </u><span class="data" id="width"></span> </p>
+					<p class="gene-info"> dominance type: <span class="data" id="widthType"></span> </p>
+					<p class="gene-info"> allele 1: <span class="data" id="widthAlleleOne"></span> </p>
+					<p class="gene-info"> allele 2: <span class="data" id="widthAlleleTwo"></span> </p>
+					<p class="gene-info"> expression: <span class="data expression-value" id="widthExpression"></span> </p>
+				</div>
+				<div class="gene-div">
+					<p class="gene-name"><u> stripe color </u><span class="data" id="width"></span> </p>
+					<p class="gene-info"> dominance type: <span class="data" id="stripeType"></span> </p>
+					<p class="gene-info"> allele 1: <span class="data" id="stripeAlleleOne"></span> </p>
+					<p class="gene-info"> allele 2: <span class="data" id="stripeAlleleTwo"></span> </p>
+					<p class="gene-info"> expression: <span class="data expression-value" id="stripeExpression"></span> </p>
+				</div>
+				<div class="gene-div">
+					<p class="gene-name"><u> litter size </u><span class="data" id="width"></span> </p>
+					<p class="gene-info"> dominance type: <span class="data" id="litterType"></span> </p>
+					<p class="gene-info"> allele 1: 
+						<span class="di" id="di1"></span>
+						<span class="data" id="litterAlleleOne"></span>
+					</p>
+					<p class="gene-info"> allele 2: 
+						<span class="di"id="di2"></span>
+						<span class="data" id="litterAlleleTwo"></span>
+					</p>
+					<p class="gene-info"> expression: <span class="data expression-value" id="litterExpression"></span> </p>
+				</div>
+			</div>
+			<p class="footer"><em> clicks kill </em></p>
+		</div>
+
+
+	</div>
+  <div class="header title" id="title"> SPOIDS </div>
+  <div class="header population" id="population"> population: 1 </div>
+
+</body>
+
+<script src="dna.js"></script>
+<script src="index.js"></script>
+
+</html>

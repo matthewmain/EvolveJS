@@ -1,0 +1,121 @@
+
+body {
+  padding: 0;
+  margin: 0;
+  user-select: none;
+}
+
+p {
+  margin: 0;
+}
+
+canvas{
+  position: absolute;
+  background-color: #002020;
+  width: 100%;
+  height: 100%;
+}
+
+
+/*header*/
+
+.header {
+  position: absolute;
+  font-family: futura-pt, sans-serif;
+  font-style: normal;
+  font-weight: 300;
+  font-size: 8pt;
+  letter-spacing: 0.03em;
+  top: 15px;
+  color: #ffffff;
+}
+
+.info {
+  width: 175px;
+  left: 18px;
+}
+
+.title {
+  transform: translate(-50%);
+  left: 50%;
+  font-size: 14pt;
+  top: 10px;
+}
+
+.population {
+  right: 18px;
+}
+
+
+/*info modal*/
+
+
+.info-content-div {
+  display: none;
+  background-color: rgba(0, 32, 32, 0.8);
+  padding: 9px 5px 10px;
+  border: 1px solid #777777;
+  border-radius: 2px;
+  font-size: 8pt;
+}
+
+.info-content-div p {
+  padding: 1px 5px;
+  color: #BBBBBB;
+}
+
+.general-info-div {
+  padding-bottom: 5px;
+}
+
+.genes-div {
+  margin-top: 11px;
+}
+
+.gene-div {
+  margin-top: 10px;
+}
+
+.gene-name {
+  margin-bottom: 4px;
+}
+
+.gene-info {
+  margin-left: 5px;
+}
+
+.data {
+  float: right;
+}
+
+.di {
+  float: right;
+  line-height: 14px;
+  font-size: 7px;
+}
+
+.expression-value {
+  font-weight: 600;
+  color: #DDDDDD;
+}
+
+.info-content-div .footer {
+  font-size: 6pt;
+  color: #777777;
+  padding-top: 12px;
+  text-align: center;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
