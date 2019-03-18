@@ -4,13 +4,13 @@
 //                                                                  //
 //                            - SPOIDS -                            //
 //                                                                  //
-//          (POC: "Petri Dish" + DNA.js + Kill 'em! + Sex)          //
+//        (POC: "Petri Dish" + Evolve.js + Kill 'em! + Sex)         //
 //                                                                  //
 //////////////////////////////////////////////////////////////////////
 
 
-// DNA.js Library: https://github.com/matthewmain/DNA
-// DNA.js CDN Location: https://cdn.jsdelivr.net/gh/matthewmain/DNA@latest/dna.js
+// Evolve.js Library: https://github.com/matthewmain/DNA   xxx{{{{{{{{{{{{{{{{{{{{{{{{{{{}}}}}}}}}}}}}}}}}}}}}}}}}}}
+// Evolve.js CDN Location: https://cdn.jsdelivr.net/gh/matthewmain/DNA@latest/DNA.js   xxx{{{{{{{{{{{{{}}}}}}}}}}}}}
 // Original "Petri Dish" pen: https://codepen.io/robbobfrh84/pen/ozgvzx 
 
 
@@ -46,12 +46,12 @@ var spoids = [];
 var spoidCount = 0;
 var worldTime = 0;
 
-///DNA.js
-var spoidGenome = DNA.addGenome( "spoid", "sexual" );
-DNA.addGene( spoidGenome, "matureWidth", "partial", "scale", imw, 5, imw, imw*0.5, null );
-DNA.addGene( spoidGenome, "stripeColor", "co", "count", 1, 5, 5, 0, 2 );
-DNA.addGene( spoidGenome, "litterSize", "complete", "count", 3, 10, 3, 1, null );
-DNA.mutationRate = 5;
+///Evolve.js
+var spoidGenome = EV.addGenome( "spoid", "sexual" );
+EV.addGene( spoidGenome, "matureWidth", "partial", "scale", imw, 5, imw, imw*0.5, null );
+EV.addGene( spoidGenome, "stripeColor", "co", "count", 1, 5, 5, 0, 2 );
+EV.addGene( spoidGenome, "litterSize", "complete", "count", 3, 10, 3, 1, null );
+EV.mutationRate = 5;
 
 
 
@@ -87,7 +87,7 @@ function Spoid( x, y, generation, genotype ) {
   this.deathTime = null;
   //genes
   this.genotype = genotype;
-  this.phenotype = DNA.generatePhenotype( this.genotype );
+  this.phenotype = EV.generatePhenotype( this.genotype );
   this.sex = this.phenotype.sex;
   this.matureWidth = this.phenotype.matureWidthValue;
   this.stripeColorIndexes = shuffle(this.phenotype.stripeColorValues);  // as array: [<integer>,<integer>]
@@ -151,7 +151,7 @@ Spoid.prototype.collisionCheck = function() {
 Spoid.prototype.reproduce = function( partner ) { 
   var litterSize = this.sex === "female" ? this.litterSize : partner.litterSize;
   for ( var i=0; i<litterSize; i++ ) {
-    var childGenotype = DNA.meiosis( spoidGenome, this.genotype, partner.genotype );
+    var childGenotype = EV.meiosis( spoidGenome, this.genotype, partner.genotype );
     var x = this.x + (partner.x-this.x)/2;
     var y = this.y + (partner.y-this.y)/2;
     var generation = this.sex === "female" ? this.generation+1 : partner.generation+1;
@@ -377,11 +377,11 @@ canvas.onclick = function() {
 
 //initial population (from standard genotypes, then given random ("mutated") sizes & initialized as mature)
 for ( var i=0; i<initialPopulationCount; i++ ) {
-  var newSpoidGenotype = DNA.newStandardFirstGenGenotype( spoidGenome );
+  var newSpoidGenotype = EV.newStandardFirstGenGenotype( spoidGenome );
   var x = rfb(canvas.width*0.2,canvas.width*0.8);
   var y = rfb(canvas.height*0.2,canvas.height*0.8);
-  DNA.mutate( DNA.species.spoid, DNA.species.spoid.genes.matureWidth, newSpoidGenotype.genes.matureWidth.allele1 );
-  DNA.mutate( DNA.species.spoid, DNA.species.spoid.genes.matureWidth, newSpoidGenotype.genes.matureWidth.allele2 );
+  EV.mutate( EV.species.spoid, EV.species.spoid.genes.matureWidth, newSpoidGenotype.genes.matureWidth.allele1 );
+  EV.mutate( EV.species.spoid, EV.species.spoid.genes.matureWidth, newSpoidGenotype.genes.matureWidth.allele2 );
   spoids.push( new Spoid( x, y, 1, newSpoidGenotype ) );
   spoids[i].maturityRatio = 1;
   spoids[i].isMature = true; 
