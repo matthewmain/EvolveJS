@@ -144,7 +144,7 @@ var EV = {
       var parent2Allele = rib(1,2) === 1 ? parentGenotype2.genes[gene].allele1 : parentGenotype2.genes[gene].allele2;
       var newAllele1 = new EV.Allele( parent1Allele.value, parent1Allele.dominanceIndex );
       var newAllele2 = new EV.Allele( parent2Allele.value, parent2Allele.dominanceIndex );
-      if ( rib( 1, species.genes[gene].mutationParameter ) === 1 ) {
+      if ( rib( 1, species.genes[gene].mutationParameter.frequency ) === 1 ) {
         if ( rib(1,2) === 1 ) {
           newAllele1 = EV.mutate( species, species.genes[gene], newAllele1 );
         } else {
