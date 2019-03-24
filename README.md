@@ -58,6 +58,8 @@ EV.addGene( skyPlantGenome, "maxLeafLength", "partial", "scale", 5.5, 5, 3, 4, n
 EV.addGene( skyPlantGenome, "flowerHue", "complete", "count", 130, 5, 50, 0, 260 ); 
 ```
 
+<br>
+
 ### Include an Organism Object Constructor With Genotype and Phenotype Values
 
 A **genotype** is a genetic blueprint for a specific organism's body. It is composed of all of that organism's genes, each of which includes specific allele pairs. The organisms that will compose our first generation of plants will need to be assigned their own genotypes. (All of the organisms in later generations will automatically inherit a combination of their parents' genes as their own new genotypes.) EvolveJS offers a couple of options for generating new first-generation genotypes. You can use `EV.newStandardFirstGenGenotype()` to create any number of identical first-generation organisms, or you can use `EV.newRandomizedFirstGenGenotype()` to create a variety of unique organisms whose genes are slightly different. Both take one argument, a species genome. We want to start with a diverse population of sky plants, so we'll use randomized sky plant genotypes.
@@ -88,7 +90,7 @@ for ( var i=0; i<20; i++ ) {
 
 <br>
 
-###Generate New Organism Objects with Inherited Traits and Random Mutations
+### Generate New Organism Objects with Inherited Traits and Random Mutations
 
 Now that we have an initial population of sky plants outfitted with EvolveJS, each plant is now equipped to reproduce and generate new offspring. Whenever your program is ready for organism reproduction, from here all we need is the `EV.meiosos()` method to generate new offspring organisms. It takes three arguments, 1) the species genome, 2) the first parent organism's genotype, and 3) the second parent organism's genotype (optional for autogamous species, and should be omitted for asexual species). Because sky plants are autogamous, whenever they self-pollinate we can either include just one parent genotype, or include the same parent genotype twice as the first and second parent genotype. Whenever they cross-pollinate, we'll need to include both parent genotypes.
 
