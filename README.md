@@ -8,7 +8,7 @@ Current stable release: https://cdn.jsdelivr.net/gh/matthewmain/EvolveJS@v1.0/ev
 
 ## Usage Guide
 
-This guide will walk you through getting started using EvolveJS with organism objects. Using flowering plants as an example, we'll go from creating first-generation organism objects to producing new, unique offspring objects that have inherited a combination of their parents' genes. All of the code from the examples has been implemented in _Kiss The Sky_, an indie video game based on plant evolution. For reference, check out the Kiss The Sky source code [here on GitHub](https://github.com/matthewmain/kiss_the_sky/tree/master/builds/v2.0), or have a look at a live application alongside the code [here on CodePen](https://codepen.io/matthewmain/pen/MxwBmo).
+This guide will walk through how to apply EvolveJS to JavaScript objects that represent biological organisms. Using a species of flowering plants as an example, we'll go from creating first-generation organism objects to producing new, unique offspring objects that have inherited a combination of their parents' genes. All of the code from the examples has been implemented in _Kiss The Sky_, an indie video game based on plant evolution. For reference, check out the Kiss The Sky source code [here on GitHub](https://github.com/matthewmain/kiss_the_sky/tree/master/builds/v2.0), or have a look at a live application alongside the code [here on CodePen](https://codepen.io/matthewmain/pen/MxwBmo).
 
 <br>
 
@@ -25,6 +25,7 @@ Or, you can reference the CDN directly.
 ```
 <script src="https://cdn.jsdelivr.net/gh/matthewmain/EvolveJS@latest/evolve.js"></script>
 ```
+
 <br>
 
 ### Create a Species Genome
