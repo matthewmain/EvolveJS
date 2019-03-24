@@ -108,4 +108,12 @@ Every time your program reproduces organisms using meiosis events, each new offs
 <br>
 <br>
 
+## Live Examples
+
+* [Kiss the Sky](https://codepen.io/matthewmain/pen/MxwBmo)
+* [Spoids](https://codepen.io/matthewmain/pen/gEjwbr)
+
+<br>
+<br>
+
 © Matthew Main 2019
