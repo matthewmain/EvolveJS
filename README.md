@@ -6,7 +6,7 @@ Current stable release: https://cdn.jsdelivr.net/gh/matthewmain/EvolveJS@v1.0/ev
 
 <br>
 
-## Quick Start Guide
+## Usage Guide
 
 This guide will walk you through getting started using EvolveJS with organism objects. Using flowering plants as an example, we'll go from creating first-generation organism objects to producing new, unique offspring objects that have inherited a combination of their parents' genes. All of the code from the examples has been implemented in _Kiss The Sky_, an indie video game based on plant evolution. For reference, check out the Kiss The Sky source code [here on GitHub](https://github.com/matthewmain/kiss_the_sky/tree/master/builds/v2.0), or have a look at a live application alongside the code [here on CodePen](https://codepen.io/matthewmain/pen/MxwBmo).
 
@@ -105,16 +105,6 @@ skyPlants.push( new skyPlant( childSkyPlantGenotype ) );
 
 Every time your program reproduces organisms using meiosis events, each new offspring object will automatically have a genotype constructed from its parent or parents' genotyped and a resulting phenotype based on the laws of Mendelian genetics. Some genes will mutate during reproduction, and the offspring carrying these genes will slightly alter the species genome. If Darwinian selection pressures are applied and the species reproduces for many generations, the species genome will gradually evolve.
 
-
-## Library Index
-
-`EV.species`
-A collection of all species genomes, by species name. 
-
-`EV.Allele`
-A trait (e.g., brown eyes). One of two sub-component pairs of a gene. 
-
-<br>
 <br>
 <br>
 
