@@ -2,7 +2,7 @@
 
 EvolveJS is a lightweight genetics library modeled on Mendelian inheritance and Darwinian selection. When implemented into any self-replicating JavaScript object instance, the library can be used to produce descendant instances whose quantifiable variables are handled as heritable genes. Sequential replication iterations are then subject to the laws of Mendelian inheritance, gene mutation, and, when Darwinian environmental selection pressures are applied, in time, evolution.
 
-Current stable release: https://cdn.jsdelivr.net/gh/matthewmain/EvolveJS@v1.0/evolve.js
+Current stable CDN: https://cdn.jsdelivr.net/gh/matthewmain/EvolveJS@v1.0/evolve.js
 
 <br>
 
@@ -116,6 +116,3 @@ Every time your program reproduces organisms using meiosis events, each new offs
 * [Spoids](https://codepen.io/matthewmain/pen/gEjwbr)
 
 <br>
-<br>
-
-© Matthew Main 2019
