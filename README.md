@@ -24,6 +24,8 @@ Or, you can reference the CDN directly.
 <script src="https://cdn.jsdelivr.net/gh/matthewmain/EvolveJS@latest/evolve.js"></script>
 ```
 
+(If you prefer to include EvolveJS in your project as a module, it is also published as an [npm package](https://www.npmjs.com/package/@matthewmain/evolve.js).)
+
 <br>
 
 ### Create a Species Genome
