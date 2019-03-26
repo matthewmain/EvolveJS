@@ -185,5 +185,5 @@ function rfb( min, max ) {
 
 
 
-
+exports.EV = EV;
 
