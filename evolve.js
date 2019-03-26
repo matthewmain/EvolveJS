@@ -185,13 +185,13 @@ function rfb( min, max ) {
 
 
 
-// exports.EV = EV;
+//exports.EV = EV;
 
-// exports.printMsg = function() {
-//   console.log("success");
-// };
+exports.printMsg = function() {
+  console.log("success");
+};
 
-// exports.returnEV = function() {
-//   return EV;
-// };
+exports.EV = function() {
+  return EV;
+};
 
