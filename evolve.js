@@ -100,7 +100,7 @@ var EV = {
   },
 
   //creates a new random genotype from a species genome (for genetically distinct organisms)
-  newRandomizedFirstGenGenotype: function( species ) {  // (species as EV.species.<speciesName>)
+  newStandardFirstGenGenotype: function( species ) {  // (species as EV.species.<speciesName>)
     var randomizedGenotype = new EV.Genotype( species );
     for ( var gene in species.genes ) { 
       var newAllele1 = randomizedGenotype.genes[gene].allele1;
@@ -182,9 +182,23 @@ function rfb( min, max ) {
 
 
 
-/////-- Exports --/////
+/////-- Exports (for npm node module) --/////
 
-exports = EV;
+exports.species = EV.species;
+
+exports.Allele = EV.Allele;
+exports.Gene = EV.Gene;
+exports.Genome = EV.Genome;
+exports.Genotype = EV.Genotype;
+exports.Phenotype = EV.Phenotype;
+
+exports.addGenome = EV.addGenome; 
+exports.addGene = EV.addGene; 
+exports.newStandardFirstGenGenotype = EV.newStandardFirstGenGenotype; 
+exports.newStandardFirstGenGenotype = EV.newStandardFirstGenGenotype; 
+exports.generatePhenotype = EV.generatePhenotype; 
+exports.mutate = EV.mutate; 
+exports.meiosis = EV.meiosis;
 
 
 
