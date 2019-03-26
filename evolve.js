@@ -184,7 +184,7 @@ function rfb( min, max ) {
 
 /////-- Exports --/////
 
-exports.EV = EV;
+exports = EV;
 
 
 
