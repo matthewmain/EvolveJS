@@ -185,8 +185,7 @@ function rfb( min, max ) {
 
 
 
-//exports.EV = EV;
-
+exports.EV = EV;
 
 exports.printMsg = function() {
   console.log("success");
