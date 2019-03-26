@@ -102,7 +102,7 @@ For our example, we'll create a new offspring sky plant genotype with two parent
 
 ```
 var childSkyPlantGenotype = EV.meiosis( skyPlantGenome, skyPlants[0].genotype, skyPlants[1].genotype );
-skyPlants.push( new skyPlant( childSkyPlantGenotype ) );
+skyPlants.push( new Plant( childSkyPlantGenotype ) );
 ```
 
 Every time your program reproduces organisms using meiosis events, each new offspring object will automatically have a genotype constructed from its parent or parents' genotyped and a resulting phenotype based on the laws of Mendelian genetics. Some genes will mutate during reproduction, and the offspring carrying these genes will slightly alter the species genome. If Darwinian selection pressures are applied and the species reproduces for many generations, the species genome will gradually evolve.
