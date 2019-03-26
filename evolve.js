@@ -185,6 +185,7 @@ function rfb( min, max ) {
 /////-- Exports (for npm/node module) --/////
 
 exports.species = EV.species;
+
 exports.Allele = EV.Allele;
 exports.Gene = EV.Gene;
 exports.Genome = EV.Genome;
