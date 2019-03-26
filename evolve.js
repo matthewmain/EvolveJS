@@ -164,6 +164,8 @@ var EV = {
 
 
 
+
+
 /////-- Helper Functions --/////
 
 //random integer between two numbers (min/max inclusive)
@@ -178,6 +180,16 @@ function rfb( min, max ) {
 
 
 
+
+
+/////-- Exports --/////
+
+exports.EV = EV;
+
+
+
+
+
 /////-- Notes --/////
 
 //*frequency as average meiosis events per mutation; higher is less frequent
@@ -185,13 +197,5 @@ function rfb( min, max ) {
 
 
 
-exports.EV = EV;
 
-// exports.printMsg = function() {
-//   console.log("success");
-// };
-
-// exports.EV = function() {
-//   return EV;
-// };
 
