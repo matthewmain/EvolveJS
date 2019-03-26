@@ -12,7 +12,7 @@ This guide will walk through how to apply EvolveJS to JavaScript objects that re
 
 ### Add EvolveJS to Your Project
 
-First, you'll need to add the [EvolveJs library](https://cdn.jsdelivr.net/gh/matthewmain/EvolveJS@latest/evolve.js) to your project and reference the source in your html.
+First, you'll need to add the [EvolveJS library](https://cdn.jsdelivr.net/gh/matthewmain/EvolveJS@latest/evolve.js) to your project and reference the source in your html.
 
 ```
 <script src="js/evolve.js"></script>
