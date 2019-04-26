@@ -10,7 +10,7 @@ This guide will walk you through how to apply EvolveJS to JavaScript objects tha
 
 <br>
 
-### Add EvolveJS to Your Project
+### 1. Add EvolveJS to Your Project
 
 First, you'll need to add the [EvolveJS library](https://cdn.jsdelivr.net/gh/matthewmain/EvolveJS@latest/evolve.js) to your project and reference the source in your html.
 
@@ -33,7 +33,7 @@ var EV = require("@matthewmain/evolve.js");
 
 <br>
 
-### Create a Species Genome
+### 2. Create a Species Genome
 
 A **genome** is a genetic blueprint for a generic species body. So, for our example, the first thing we'll need to do is create a genome for a plant species. EvolveJS can handle any number of distinct species genomes at once, but for this guide we'll create just one. We'll use the `EV.addGenome()` method. It takes two arguments: 1) _the new name you want to give the new species_, and 2) _the species's reproduction type_. A species can have an `"asexual"`, `"sexual"`, or `"autogamous"` reproduction type. Asexual species spawn offspring with copies of just their own genes. Sexual species generate offspring by combining genes from a male/female pair. Autogamous species, like many plants, are capable both of reproducing with other organisms and self-fertilizing. In the spirit of _Kiss the Sky_, we'll call our plant species a "sky plant". Because it will be a flowering plant that can both cross-pollinate and self-pollinate, we'll give it an autogamous reproduction type.
 
@@ -43,7 +43,7 @@ var skyPlantGenome = EV.addGenome( "skyPlant", "autogamous" );
 
 <br>
 
-### Add Genes to the Species Genome
+### 3. Add Genes to the Species Genome
 
 Now we'll need to add some genes to the plant genome. A **gene** represents a feature (like eye color or height). It is composed of two **alleles** (each of which represents a specific trait, like brown eyes or six feet tall). If a gene's alleles are different, one will always be more dominant in relation to the other. The dominant allele's trait will be expressed in the organism, either in full or in part. The recessive allele's trait will only be expressed in part or not at all. For this step we'll use the `EV.addGene()` method, which takes the following nine arguments.
 
@@ -67,7 +67,7 @@ EV.addGene( skyPlantGenome, "flowerHue", "complete", "count", 130, 5, 50, 0, 260
 
 <br>
 
-### Include an Organism Object Constructor With Genotype and Phenotype Values
+### 4. Include an Organism Object Constructor With Genotype and Phenotype Values
 
 A **genotype** is a genetic blueprint for a specific organism's body. It is composed of all of that organism's genes, each of which includes specific allele pairs. The organisms that will compose our first generation of plants will need to be assigned their own genotypes. (All of the organisms in later generations will automatically inherit a combination of their parents' genes to form their own new genotypes.) EvolveJS offers a couple of options for generating new first-generation genotypes. You can use `EV.newStandardFirstGenGenotype()` to create any number of genetically identical first-generation organisms, or you can use `EV.newRandomizedFirstGenGenotype()` to create a variety of unique organisms whose genes are slightly different. Both take one argument, a _species genome_ as a species genome object. We want to start with a diverse population of sky plants, so we'll use randomized sky plant genotypes.
 
@@ -97,7 +97,7 @@ for ( var i=0; i<20; i++ ) {
 
 <br>
 
-### Generate New Organism Objects with Inherited Traits and Random Mutations
+### 5. Generate New Organism Objects with Inherited Traits and Random Mutations
 
 Now that we have an initial population of sky plants outfitted with EvolveJS, each plant is now equipped to reproduce and generate new offspring. Whenever your program is ready for organism reproduction, from here all you need is the `EV.meiosos()` method to generate new offspring organisms. It takes three arguments, 1) the _species genome_, 2) the _first parent organism's genotype_, and 3) the _second parent organism's genotype_ (a second parent genotype is optional for autogamous species, and should be omitted for asexual species). Because sky plants are autogamous, whenever they self-pollinate we can either include just one parent genotype, or include the same parent genotype twice as the first and second parent genotype. Whenever sky plants cross-pollinate, we'll need to include both parent genotypes.
 
